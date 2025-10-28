@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>web worker</title>
+    </head>
+    <body>
+        <p>Count number: <output id="result"></output></p>
+
+        <button onclick="startWorker()">Start Worker</button>
+        <button onclick="stopWorker()">Stop Worker</button>
+
+        <script type="text/javascript">
+            var w; // Declare worker variable globally
+            
+            function startWorker() {
+                if (typeof(Worker) !== "undefined") {
+                    if (typeof(w) === "undefined") {
+                        w = new Worker("demo_worker.js");
+                        w.onmessage = function(event) {
+                            document.getElementById("result").innerHTML = event.data;
+                        };
+                        w.onerror = function(error) {
+                            document.getElementById("result").innerHTML = "Error: " + error.message;
+                        };
+                    }
+                } else {
+                    document.getElementById("result").innerHTML = "Your browser does not support Web Workers";
+                }
+            }
+
+            function stopWorker() {
+                if (w) {
+                    w.terminate();
+                    w = undefined;
+                    document.getElementById("result").innerHTML = "Worker stopped";
+                }
+            }
+        </script>
+    </body>
+</html>
